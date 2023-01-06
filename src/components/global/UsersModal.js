@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { Avatar, Modal } from "@mui/material";
 
@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllUsers } from "../../redux/slices/authSlice";
 import { startConversation } from "../../redux/slices/chatSlice";
 import Loader from "./Loader";
+import Searchbar from "./SearchBar";
+import useSearch from "../../utils/hooks/useSearch";
 
 const useStyles = makeStyles(() => ({
   mainContainer: {
@@ -71,13 +73,9 @@ const UsersModal = ({ isOpen, setOpen }) => {
   const { allUsers } = useSelector((state) => state.auth);
   const { allConversations, allChatsApi } = useSelector((state) => state.chats);
 
-  useEffect(() => {
-    // console.log({ allUsers });
-    if (!allUsers) dispatch(getAllUsers());
-    // eslint-disable-next-line
-  }, [allUsers]);
+  const [searchQuery, setSearchQuery] = useState();
 
-  const dataToShow = useMemo(() => {
+  const relevantUsers = useMemo(() => {
     if (allUsers?.length) {
       return allUsers
         ?.filter((elem) => elem?._id !== currentUser?._id)
@@ -95,7 +93,13 @@ const UsersModal = ({ isOpen, setOpen }) => {
     // eslint-disable-next-line
   }, [allUsers, allConversations]);
 
-  //   console.log({ dataToShow });
+  const filteredUsers = useSearch(searchQuery, relevantUsers, "name");
+
+  useEffect(() => {
+    // console.log({ allUsers });
+    if (!allUsers) dispatch(getAllUsers());
+    // eslint-disable-next-line
+  }, [allUsers]);
 
   const handleCardClick = (card) => {
     // console.log({ card });
@@ -114,7 +118,11 @@ const UsersModal = ({ isOpen, setOpen }) => {
           <Loader />
         ) : (
           <div className={classes.content}>
-            {dataToShow?.map((elem, index) => (
+            <Searchbar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+            {filteredUsers?.map((elem, index) => (
               <div
                 className={classes.userCard}
                 key={index}

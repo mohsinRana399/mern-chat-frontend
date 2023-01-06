@@ -7,6 +7,8 @@ import { getAllUsers } from "../../redux/slices/authSlice";
 import { startGroupConversation } from "../../redux/slices/chatSlice";
 import Loader from "./Loader";
 import { toast } from "react-toastify";
+import useSearch from "../../utils/hooks/useSearch";
+import Searchbar from "./SearchBar";
 
 const useStyles = makeStyles(() => ({
   mainContainer: {
@@ -17,7 +19,7 @@ const useStyles = makeStyles(() => ({
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: 400,
-    height: 330,
+    maxHeight: 600,
   },
 
   content: {
@@ -30,6 +32,19 @@ const useStyles = makeStyles(() => ({
 
     border: "1px solid rgba(255, 255, 255, 0.3)",
     padding: "10px 0px",
+  },
+  input: {
+    display: "flex",
+    flex: 1,
+    alignItems: "center",
+    padding: "0px 5%",
+    maxHeight: 50,
+    backgroundColor: "white",
+  },
+  itemsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
     overflowY: "scroll",
     "&::-webkit-scrollbar": {
       width: "0.4em",
@@ -42,14 +57,6 @@ const useStyles = makeStyles(() => ({
       borderRadius: "5px",
     },
     scrollBehavior: "smooth !important",
-  },
-  input: {
-    display: "flex",
-    flex: 1,
-    alignItems: "center",
-    padding: "0px 5%",
-    maxHeight: 50,
-    backgroundColor: "white",
   },
   userCard: {
     display: "flex",
@@ -96,6 +103,13 @@ const GroupModal = ({ isOpen, setOpen }) => {
 
   const [groupName, setGroupName] = useState();
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState();
+
+  const filteredUsers = useSearch(
+    searchQuery,
+    allUsers?.filter((filterEl) => filterEl?._id !== currentUser?._id),
+    "name"
+  );
 
   useEffect(() => {
     // console.log({ allUsers });
@@ -134,6 +148,10 @@ const GroupModal = ({ isOpen, setOpen }) => {
           <Loader />
         ) : (
           <div className={classes.content}>
+            <Searchbar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
             <TextField
               label="Group name"
               variant="outlined"
@@ -141,10 +159,8 @@ const GroupModal = ({ isOpen, setOpen }) => {
               onChange={(e) => setGroupName(e.target.value)}
               sx={{ backgroundColor: "white", margin: "5px 20px" }}
             />
-
-            {allUsers
-              ?.filter((filterEl) => filterEl?._id !== currentUser?._id)
-              ?.map((elem, index) => (
+            <div className={classes.itemsContainer}>
+              {filteredUsers?.map((elem, index) => (
                 <div className={classes.userCard} key={index}>
                   <Avatar
                     src={elem?.photo}
@@ -158,6 +174,7 @@ const GroupModal = ({ isOpen, setOpen }) => {
                   />
                 </div>
               ))}
+            </div>
 
             <Button
               sx={buttonSx}
