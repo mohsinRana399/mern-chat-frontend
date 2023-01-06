@@ -1,8 +1,14 @@
 import { setCurrentUser } from "../redux/slices/authSlice";
+import {
+  setConversationMessages,
+  setSelectedConversation,
+} from "../redux/slices/chatSlice";
 import { disconnectChatService } from "./sockets/sockets";
 
 export const handleLogout = (dispatch) => {
   dispatch(setCurrentUser(null));
+  dispatch(setSelectedConversation(null));
+  dispatch(setConversationMessages(null));
   disconnectChatService();
 };
 export const validatePassword = (input) => {

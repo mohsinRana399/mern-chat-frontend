@@ -134,6 +134,9 @@ export const chatSlice = createSlice({
     setSelectedConversation: (state, action) => {
       state.selectedConversation = action.payload;
     },
+    setConversationMessages: (state, action) => {
+      state.conversationMessages = action.payload;
+    },
     setNewMessage: (state, action) => {
       state.newMessage = action.payload;
     },
@@ -287,5 +290,6 @@ export const {
   updateAllConversations,
   updateGroupConversations,
   setNewBroadcast,
+  setConversationMessages,
 } = chatSlice.actions;
 export default chatSlice.reducer;
