@@ -1,0 +1,34 @@
+.auth-input {
+  display: flex;
+  flex: 1;
+  border: none;
+  font-size: 14px;
+  background: none;
+  color: #134696;
+  font-family: light;
+}
+.auth-input:focus {
+  outline: none;
+}
+.auth-input::placeholder {
+  color: #7d7d7d;
+  font-size: 12px;
+  font-family: light;
+}
+.area-input {
+  display: flex;
+  border: none;
+  color: #134696;
+  font-size: 16px;
+  border-radius: 10px;
+  width: 80%;
+  padding: 10px;
+}
+.area-input:focus {
+  outline: none;
+}
+.area-input::placeholder {
+  color: #7d7d7d;
+  font-size: 12px;
+  font-family: light;
+}
